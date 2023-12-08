@@ -1,5 +1,7 @@
+# Folders and files to ignore
+
 .DS_Store
 .vscode/
 sass/
 assets/css/style.css.map
-
+resources/
