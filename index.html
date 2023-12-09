@@ -18,7 +18,7 @@
 <body>
     <main>
         <!-- HOME PAGE SECTION -->
-        <section class="page" id="homePage">
+        <section class="page visible" id="homePage">
             <h1>HOME</h1>
             <div class="d-flex justify-content-center mb-3">
                 <button type="button" class="addNewItem btn btn-danger">Add new article</button>
@@ -48,10 +48,10 @@
             <div class="buttonContainer d-flex justify-content-center"><button type="button" class="homePageBtn btn btn-primary">Home page</button></div>
         </section>
         <!-- INSERT FORM SECTION -->
-        <section class="page visible" id="insertForm"> 
+        <section class="page" id="insertForm"> 
             <h2 class="formTitle text-center">INSERT A NEW PRODUCT</h2>
             <div class="insertFormContainer">
-                <form action="#" class="insertForm">
+                <!-- <form action="#" class="insertForm">
                     <div class="inputField d-flex">
                         <label for="name">Product name</label>
                         <input type="text" name="name" id="name" placeholder="Type in the name ofthe product">
@@ -73,11 +73,10 @@
                         <label for="description">Description</label>
                         <textarea name="desciption" id="description" cols="60" rows="5" placeholder="Type in a description of the product"></textarea>
                     </div>
-                    <div class="buttonsContainer d-flex justify-content-center">
-                        <button type="button" class="resetForm btn btn-danger">Reset form</button>
-                        <button type="button" class="addProduct btn btn-success">Add product</button>
-                    </div>
-                </form>
+                </form> -->
+            </div>
+            <div class="buttonsContainer d-flex justify-content-center">
+                <button type="button" class="homePageBtn btn btn-primary" id="toHomeFromForm">Home page</button>
             </div>
         </section>
     </main>
