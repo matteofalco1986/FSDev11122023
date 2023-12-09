@@ -5,6 +5,8 @@ let products = [];
 const timeouts = [0, 10, 50, 100, 300, 500, 750, 1000, 1500, 2000]
 const homePageRow = document.querySelector('.homePageRow');
 const productPageRow = document.querySelector('.productPageRow');
+const insertFormSection = document.querySelector("#insertForm");
+const addNewItemBtn = document.querySelector('addNewItem');
 
 
 // Gets data from fake e-commerce API and populates products array
@@ -20,6 +22,41 @@ setTimeout(openInfoPage, timeouts[7]);
 setTimeout(() => {
     console.log(products)
 }, timeouts[9]);
+
+
+
+// setTimeout(() => postData(products[5]), 3000)
+populateInsertForm();
+// Select all the items in the page
+// The red button must reset the form
+allFieldsElements = document.querySelectorAll('input, textarea');
+resetBtn = document.querySelector('.resetForm');
+addProductBtn = document.querySelector('.addProduct');
+// Resets all fields
+resetBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    allFieldsElements.forEach((element) => {
+        element.value = '';
+    });
+})
+// The green button must create a new object
+addProductBtn.addEventListener('click', (event)=>{
+    event.preventDefault();
+    let productName = document.querySelector('#name');
+    let brand = document.querySelector('#brand');
+    let imageUrl = document.querySelector('#imageUrl');
+    let price = document.querySelector('#price');
+    let description = document.querySelector('#description');
+    // Take info in the objects from the fields and create object
+    itemToAdd = new createArticle(productName.value, description.value, brand.value, imageUrl.value, parseFloat(price.value));
+    console.log(itemToAdd);
+    setTimeout(() => postData(itemToAdd), 0);
+})
+
+// Make a post request with the object passed as argument
+// Update home page with new data
+// Make page disappear
+// Make home page visible
 
 
 
@@ -80,7 +117,6 @@ async function postData(_object) {
         }
         const data = await response.json();
         console.log(data);
-        // populateHomePage(data);
     } catch (error) {
         console.log("Error: ", error);
     }
@@ -222,7 +258,6 @@ function populateProductPage(singleArticle) {
                             <p>${singleArticle.price}</p>
                             <a href="#" class="modifyBtn btn btn-danger">Modifica</a>
                         </div>
-                        <button type="button" class="homePageBtn btn btn-primary">Home page</button>
                     `
 }
 
@@ -233,9 +268,59 @@ function backToHomePage() {
     })
 };
 
+function toInsertForm() {
+    // Inject the content to the HTML
+
+    // Select all the items in the page
+    // The red button must reset the form
+    // The green button must create a new object
+    // Take info in the objects from the fields
+    // Make a post request with the object passed as argument
+    // Update home page with new data
+    // Make page disappear
+    // Make home page visible
+}
+
+
+function populateInsertForm() {
+    insertFormSection.innerHTML = '';
+    const textToInject = `
+                <h2 class="formTitle text-center">INSERT A NEW PRODUCT</h2>
+                <div class="insertFormContainer">
+                    <form action="" class="insertForm">
+                        <div class="inputField d-flex">
+                            <label for="name">Product name</label>
+                            <input type="text" name="name" id="name" placeholder="Type in the name ofthe product">
+                        </div>
+                        <div class="inputField d-flex">
+                            <label for="brand">Brand</label>
+                            <input type="text" name="brand" id="brand" placeholder="Type in the product brand">
+                        </div>
+                        <div class="inputField d-flex">
+                            <label for="imageUrl">Image URL</label>
+                            <input type="text" name="imageUrl" id="imageUrl" placeholder="Type in an image URL">
+                        </div>
+                        <div class="inputField d-flex">
+                            <label for="price">Price in €</label>
+                            <input type="text" name="price" id="price"
+                            placeholder="Type in the price for the product. Use numbers only">
+                        </div>
+                        <div class="inputField d-flex">
+                            <label for="description">Description</label>
+                            <textarea name="desciption" id="description" cols="60" rows="5" placeholder="Type in a description of the product"></textarea>
+                        </div>
+                        <div class="buttonsContainer d-flex justify-content-center">
+                            <button type="button" class="resetForm btn btn-danger">Reset form</button>
+                            <button type="submit" class="addProduct btn btn-success">Add product</button>
+                        </div>
+                    </form>
+                </div>
+            `
+    insertFormSection.innerHTML = textToInject;
+}
 
 // CREAZIONE
-// Quando clicco nuovo, deve comparire una finestra con un elenco di possibili prodotti da aggiungere
+// Quando clicco nuovo, deve comparire una finestra form con una serie di campi da compilare
 // Cliccando sul prodotto deve aprirsi la pagina del form per l'aggiunta alla API
 // Il bottone di reset del form, deve ripristinare i campi ai valori di default del prodotto da aggiungere dall'array PRODUCTS.
 // Il bottone crea risorsa, deve caricare il prodotto sulla API tramite una richiesta POST.
