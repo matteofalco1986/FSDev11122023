@@ -16,33 +16,33 @@
 </head>
 
 <body>
-    <header>
-        <div class="d-flex justify-content-center">
-            <h1>HOME</h1>
-        </div>
-    </header>
     <main>
-        <div class="pageContainer">
-            <div class="d-flex justify-content-center">
-                <button type="button" class="addNewItem btn btn-primary">Add new article</button>
+        <section class="page visible" id="homePage">
+            <h1>HOME</h1>
+            <div class="d-flex justify-content-center mb-3">
+                <button type="button" class="addNewItem btn btn-danger">Add new article</button>
             </div>
             <div class="container-fluid">
-                <div class="row">
+                <div class="homePageRow row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xxl-5 justify-content-center">
+                </div>
+            </div>
+        </section>
+        <section class="page" id="productPage">
+            <div class="container-fluid">
+                <div class="productPageRow row justify-content-center">
                     <div class="col">
-                        <div class="card" style="width: 18rem;">
-                            <img src="" class="card-img-top" alt="Foto Immagine">
-                            <div class="card-body">
-                                <h5 class="card-title">Articolo</h5>
-                                <p class="card-text">Descrizione articolo</p>
-                                <p>Prezzo</p>
-                                <a href="#" class="btn btn-primary">Scopri di più</a>
-                                <a href="#" class="btn btn-danger">Modifica</a>
-                            </div>
-                        </div>
+                        <img src="" alt="Product Image"> <!-- Image of current product -->
+                    </div>
+                    <div class="col">
+                        <h2>Product Title</h2>
+                        <h3>Brand</h3>
+                        <p class="productDescription">Product description</p>
+                        <p>Price</p>
+                        <a href="#" class="modifyBtn btn btn-danger">Modifica</a>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
 </body>
 
