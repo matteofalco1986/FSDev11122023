@@ -14,6 +14,7 @@ let products = [];
 const homePage = document.querySelector("#homePage");
 const productPage = document.querySelector('#productPage');
 const insertFormPage = document.querySelector("#insertForm");
+const modifyProductPage = document.querySelector("#modifyForm");
 
 // Home page
 const homePageRow = document.querySelector('.homePageRow');
@@ -34,6 +35,17 @@ let description = document.querySelector('#description');
 let allFieldsElements = document.querySelectorAll('input, textarea');
 setResetButton();
 
+// Modify product page
+const submitChangesBtn = document.querySelector('.submitChangesBtn');
+const deleteBtn = document.querySelector('.deleteBtn');
+let productIdMod = document.querySelector("#productId");
+let productNameMod = document.querySelector('#nameMod');
+let brandMod = document.querySelector('#brandMod');
+let imageUrlMod = document.querySelector('#imageUrlMod');
+let priceMod = document.querySelector('#priceMod');
+let descriptionMod = document.querySelector('#descriptionMod');
+
+
 
 
 
@@ -48,7 +60,13 @@ setTimeout(setSideMenu, timeouts[7]);
 getDataToHomePage("");
 
 // Makes info buttons clickable and able to open product page
-setTimeout(openProductPage, timeouts[7]);
+setTimeout(setDetailPageButtons, timeouts[7]);
+
+// Makes modify buttons clickable and able to open modify page
+setTimeout(setModifyItemButtons, timeouts[7]);
+
+// Set delete buttons for form
+setTimeout(setDeleteBtn, timeouts[7]);
 
 // Makes button clickable to go to insert new product form
 setTimeout(setAddNewItemPage, timeouts[9])
@@ -122,8 +140,8 @@ function setSideMenu() {
     populateSideMenu();
 }
 
-// OPENS PRODUCT PAGE
-function openProductPage() {
+// Set buttons to send to detail page
+function setDetailPageButtons() {
     const findOutMoreLinks = document.querySelectorAll('.findOutMoreBtn');
     findOutMoreLinks.forEach((link) => {
         link.addEventListener('click', (event) => {
@@ -135,6 +153,23 @@ function openProductPage() {
             // Hides previous page
             setTimeout(() => goToPage(productPage), timeouts[7])
             setTimeout(() => backToHomePage(0), timeouts[7])
+        });
+    });
+}
+
+// Set buttons to send to detail page
+function setModifyItemButtons() {
+    const modifyButtons = document.querySelectorAll('.modifyBtn');
+    modifyButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            let productCard = button.closest(".card");
+            console.log(productCard)
+            // Make a request to the server using the id stored in the data-id attribute
+            getDataToModifyPage(productCard.dataset.id)
+            // Hides previous page
+            setTimeout(() => goToPage(modifyProductPage), timeouts[7])
+            setTimeout(() => backToHomePage(2), timeouts[7])
         });
     });
 }
@@ -159,6 +194,18 @@ async function getDataToProductPage(_id) {
         console.log("Error: ", error);
     }
 }
+
+function setDeleteBtn(){
+    deleteBtn.addEventListener('click', () => {
+        const myProductId = productIdMod.innerHTML;
+        deleteData(myProductId);
+        modifyProductPage.classList.remove('visible');
+        setTimeout(() => getDataToHomePage(''), timeouts[5])
+    
+        setTimeout(() => location.reload(), timeouts[9])
+    });
+}
+
 
 // POPULATES PRODUCT PAGE WITH DATA
 function populateProductPage(singleArticle) {
@@ -193,14 +240,14 @@ function setAddNewItemPage() {
             // Take info in the objects from the fields and create object
             itemToAdd = new createArticle(productName.value, description.value, brand.value, imageUrl.value, parseFloat(price.value));
             // Make a post request with the object passed as argument
-            console.log(itemToAdd);
+            // console.log(itemToAdd);
             setTimeout(() => postData(itemToAdd), timeouts[6]);
             // Nascondere la pagina corrente
             document.querySelector('.visible').classList.remove('visible');
             // Iniettare i dati nuovi nella home page
             setTimeout(() => getDataToHomePage(""), timeouts[7]);
             // Rendere la home page visibile
-            setTimeout(() => homePage.classList.add('visible'), timeouts[9]);
+            setTimeout(() => location.reload(), timeouts[9]);
         })
         setTimeout(() => backToHomePage(1), timeouts[9])
     });
@@ -227,7 +274,6 @@ function insertDataInForm() {
             event.preventDefault();
             // Find element that matches in product
             productToFillFields = products.find((element) => element.name === item.querySelector('p').innerText);
-            console.log(item.querySelector('p').innerText)
             productName.value = productToFillFields.name;
             brand.value = productToFillFields.brand;
             imageUrl.value = productToFillFields.imageUrl;
@@ -249,6 +295,39 @@ function setResetButton() {
             });
         })
     });
+}
+
+// -------------MODIFY AND DELETE FORM PAGE----------------------
+
+async function getDataToModifyPage(_id) {
+    try {
+        const response = await fetch(endPointUrl + _id, {
+            headers: {
+                "Authorization": apiKey
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        // Popola campi input
+        setTimeout(() => insertDataInModifyForm(data), timeouts[5]);
+
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+}
+
+function insertDataInModifyForm(product) {
+    
+    productIdMod.innerHTML = product._id;
+    productNameMod.value = product.name;
+    brandMod.value = product.brand;
+    imageUrlMod.value = product.imageUrl;
+    priceMod.value = parseFloat(product.price);
+    descriptionMod.value = product.description;
 }
 
 // -----------GENERIC FUNCTIONS------------------

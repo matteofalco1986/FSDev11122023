@@ -41,7 +41,7 @@
         </section>
         <!-- INSERT FORM SECTION -->
         <section class="page" id="insertForm">
-            <button type="button" class="menuBtn btn btn-info text-white">Click for products</button>
+            <button type="button" class="menuBtn btn btn-info text-white">Click for the default catalogue</button>
             <div class="sideMenu d-flex flex-column">
 
             </div>
@@ -82,38 +82,38 @@
         </section>
         <!-- MODIFY FORM SECTION -->
         <section class="page" id="modifyForm">
-            <button type="button" class="menuBtn btn btn-info text-white">Click for products</button>
-            <div class="sideMenu d-flex flex-column">
-
-            </div>
-            <h2 class="formTitle text-center">INSERT A NEW PRODUCT</h2>
+            <h2 class="formTitle text-center">MODIFY AN EXISTING PRODUCT</h2>
             <div class="insertFormContainer">
                 <div class="insertForm">
                     <div class="inputField d-flex">
-                        <label for="name">Product name</label>
-                        <input type="text" name="name" id="name" placeholder="Type in the name of the product">
+                        <label for="productId">Product ID</label>
+                        <p id="productId"></p>
                     </div>
                     <div class="inputField d-flex">
-                        <label for="brand">Brand</label>
-                        <input type="text" name="brand" id="brand" placeholder="Type in the product brand">
+                        <label for="nameMod">Product name</label>
+                        <input type="text" name="nameMod" id="nameMod" placeholder="Type in the name of the product">
                     </div>
                     <div class="inputField d-flex">
-                        <label for="imageUrl">Image URL</label>
-                        <input type="text" name="imageUrl" id="imageUrl" placeholder="Type in an image URL">
+                        <label for="brandMod">Brand</label>
+                        <input type="text" name="brandMod" id="brandMod" placeholder="Type in the product brand">
                     </div>
                     <div class="inputField d-flex">
-                        <label for="price">Price in €</label>
-                        <input type="text" name="price" id="price"
+                        <label for="imageUrlMod">Image URL</label>
+                        <input type="text" name="imageUrlMod" id="imageUrlMod" placeholder="Type in an image URL">
+                    </div>
+                    <div class="inputField d-flex">
+                        <label for="priceMod">Price in €</label>
+                        <input type="text" name="priceMod" id="priceMod"
                             placeholder="Type in the price for the product. Use numbers only">
                     </div>
                     <div class="inputField d-flex">
-                        <label for="description">Description</label>
-                        <textarea name="desciption" id="description" cols="60" rows="5"
+                        <label for="descriptionMod">Description</label>
+                        <textarea name="desciptionMod" id="descriptionMod" cols="60" rows="5"
                             placeholder="Type in a description of the product"></textarea>
                     </div>
                     <div class="buttonsContainer d-flex justify-content-center">
                         <button type="button" class="resetForm btn btn-danger">Reset form</button>
-                        <button type="button" class="modifyBtn btn btn-warning">Modify product</button>
+                        <button type="button" class="submitChangesbtn btn btn-warning">Submit changes</button>
                         <button type="button" class="deleteBtn btn btn-info">Delete product</button>
                     </div>
                 </div>
