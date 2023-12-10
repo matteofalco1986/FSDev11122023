@@ -11,7 +11,7 @@ let products = [];
 
 
 // Pages
-const homePage = document.querySelector("#homepage");
+const homePage = document.querySelector("#homePage");
 const productPage = document.querySelector('#productPage');
 const insertFormPage = document.querySelector("#insertForm");
 
@@ -23,7 +23,7 @@ const insertFormContainer = document.querySelector(".insertFormContainer");
 const productPageRow = document.querySelector('.productPageRow');
 const menuBtn = document.querySelector(".menuBtn");
 const sideMenu = document.querySelector(".sideMenu");
-const resetBtn = document.querySelector('.resetForm');
+const resetButtons = document.querySelectorAll('.resetForm');
 const addNewItemBtn = document.querySelector('.addNewItem');
 const addProductBtn = document.querySelector('.addProduct');
 let productName = document.querySelector('#name');
@@ -172,12 +172,11 @@ function populateProductPage(singleArticle) {
                             <h2>${singleArticle.name}</h2>
                             <h3>${singleArticle.brand}</h3>
                             <p class="productDescription">${singleArticle.description}</p>
-                            <p>${singleArticle.price}</p>
+                            <p>${singleArticle.price} €</p>
                             <a href="#" class="modifyBtn btn btn-danger">Modifica</a>
                         </div>
                     `
 }
-
 
 // ---------------INSERT FORM PAGE--------------------
 
@@ -195,20 +194,16 @@ function setAddNewItemPage() {
             itemToAdd = new createArticle(productName.value, description.value, brand.value, imageUrl.value, parseFloat(price.value));
             // Make a post request with the object passed as argument
             console.log(itemToAdd);
-            setTimeout(() => postData(itemToAdd), timeouts[9]);
+            setTimeout(() => postData(itemToAdd), timeouts[6]);
+            // Nascondere la pagina corrente
+            document.querySelector('.visible').classList.remove('visible');
+            // Iniettare i dati nuovi nella home page
+            setTimeout(() => getDataToHomePage(""), timeouts[7]);
+            // Rendere la home page visibile
+            setTimeout(() => homePage.classList.add('visible'), timeouts[9]);
         })
         setTimeout(() => backToHomePage(1), timeouts[9])
-
     });
-
-    // Select all the items in the page
-    // The red button must reset the form
-    // The green button must create a new object
-    // Take info in the objects from the fields
-    // Make a post request with the object passed as argument
-    // Update home page with new data
-    // Make page disappear
-    // Make home page visible
 }
 
 // Populates side menu HTML
@@ -244,14 +239,16 @@ function insertDataInForm() {
 
 }
 
-// Sets button that resets input form
-function setResetButton(){
-    resetBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        allFieldsElements.forEach((element) => {
-            element.value = '';
-        });
-    })
+// Sets buttons that reset input form
+function setResetButton() {
+    resetButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            allFieldsElements.forEach((element) => {
+                element.value = '';
+            });
+        })
+    });
 }
 
 // -----------GENERIC FUNCTIONS------------------
@@ -383,5 +380,5 @@ async function getFakeData(_address) {
 // DELETE BEFORE STARTING
 
 // setTimeout(() => {
-//     deleteData("6575ccf83dada00018a69e7f")
+//     deleteData("65737770fe031e0019ba1c75")
 // }, 3000)
