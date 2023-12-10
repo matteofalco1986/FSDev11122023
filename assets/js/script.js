@@ -44,7 +44,7 @@ let brandMod = document.querySelector('#brandMod');
 let imageUrlMod = document.querySelector('#imageUrlMod');
 let priceMod = document.querySelector('#priceMod');
 let descriptionMod = document.querySelector('#descriptionMod');
-
+const homePageButtons = document.querySelectorAll('.homePageBtn');
 
 
 
@@ -81,6 +81,14 @@ setTimeout(() => {
 
 
 setTimeout(insertDataInForm, timeouts[9])
+
+
+setTimeout(()=>{
+    homePageButtons.forEach((item) => {
+        item.addEventListener('click', () => location.reload());
+    });
+
+}, timeouts[8]);
 
 
 // -------------FUNCTIONS----------------
@@ -213,10 +221,10 @@ function populateProductPage(singleArticle) {
     // Add single product to HTML
     productPageRow.innerHTML = '';
     productPageRow.innerHTML = `                  
-                        <div class="col">
+                        <div class="detailElement">
                             <img src="${singleArticle.imageUrl}" alt=${singleArticle.name}>
                         </div>
-                        <div class="col">
+                        <div class="detailElement">
                             <h2>${singleArticle.name}</h2>
                             <h3>${singleArticle.brand}</h3>
                             <p class="productDescription">${singleArticle.description}</p>
@@ -417,6 +425,7 @@ async function postData(_object) {
         console.log(data);
     } catch (error) {
         console.log("Error: ", error);
+        window.alert(`${error} Il prodotto è già stato aggiunto`);
     }
 }
 
