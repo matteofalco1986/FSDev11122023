@@ -1,17 +1,48 @@
+// Global variables and constants
+const timeouts = [0, 10, 50, 100, 300, 500, 750, 1000, 1500, 2000]
+
+// Endpoints and URLS
 const apiKey = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTcyZmViM2ZlMDMxZTAwMTliYTE0ZjYiLCJpYXQiOjE3MDIwMzkzMDksImV4cCI6MTcwMzI0ODkwOX0.mBhcHRomhIJsRdAjQW0eM51hxKeC9RDFGWPz7aPZPRI"
 const endPointUrl = "https://striveschool-api.herokuapp.com/api/product/"
 const fakeData = "https://fakestoreapi.com/products"
-let products = [];
-const timeouts = [0, 10, 50, 100, 300, 500, 750, 1000, 1500, 2000]
-const homePageRow = document.querySelector('.homePageRow');
-const productPageRow = document.querySelector('.productPageRow');
-const insertFormSection = document.querySelector(".insertFormContainer");
-const productPage = document.querySelector('#productPage');
-const addNewItemBtn = document.querySelector('addNewItem');
 
+// Array of all products available on the fake store
+let products = [];
+
+
+// Pages
+const homePage = document.querySelector("#homepage");
+const productPage = document.querySelector('#productPage');
+const insertFormPage = document.querySelector("#insertForm");
+
+// Home page
+const homePageRow = document.querySelector('.homePageRow');
+
+// Add product page
+const insertFormContainer = document.querySelector(".insertFormContainer");
+const productPageRow = document.querySelector('.productPageRow');
+const menuBtn = document.querySelector(".menuBtn");
+const sideMenu = document.querySelector(".sideMenu");
+const resetBtn = document.querySelector('.resetForm');
+const addNewItemBtn = document.querySelector('.addNewItem');
+const addProductBtn = document.querySelector('.addProduct');
+let productName = document.querySelector('#name');
+let brand = document.querySelector('#brand');
+let imageUrl = document.querySelector('#imageUrl');
+let price = document.querySelector('#price');
+let description = document.querySelector('#description');
+let allFieldsElements = document.querySelectorAll('input, textarea');
+setResetButton();
+
+
+
+
+
+// CORE CODE
 
 // Gets data from fake e-commerce API and populates products array
 getFakeData(fakeData);
+setTimeout(setSideMenu, timeouts[7]);
 
 // Gets all data from API to the Home Page
 getDataToHomePage("");
@@ -19,23 +50,23 @@ getDataToHomePage("");
 // Makes info buttons clickable and able to open product page
 setTimeout(openProductPage, timeouts[7]);
 
+// Makes button clickable to go to insert new product form
+setTimeout(setAddNewItemPage, timeouts[9])
+
 // Prints products in the array
 setTimeout(() => {
     console.log(products)
 }, timeouts[9]);
 
 
-addNewItemBtn.addEventListener('click', toInsertForm)
+setTimeout(insertDataInForm, timeouts[9])
 
 
+// -------------FUNCTIONS----------------
 
-// Update home page with new data
-// Make page disappear
-// Make home page visible
+// --------------HOMEPAGE----------------
 
-
-
-// GET DATA
+// GET DATA and POPULATE HOMEPAGE
 async function getDataToHomePage(_id) {
     try {
         const response = await fetch(endPointUrl + _id, {
@@ -54,6 +85,59 @@ async function getDataToHomePage(_id) {
         console.log("Error: ", error);
     }
 }
+// Populate homepage with products from API
+function populateHomePage(articles) {
+    // Add single product to HTML
+    homePageRow.innerHTML = '';
+    for (let i = 0; i < articles.length; i++) {
+        homePageRow.innerHTML += `                  
+                        <div class="col mb-3">
+                            <div class="card" style=="width: 18rem;" data-id=${articles[i]["_id"]}>
+                                <img src="${articles[i].imageUrl}" class="card-img-top" alt="${articles[i].name}">
+                                <div class="card-body">
+                                    <h5 class="card-title resize-title">${articles[i].name}</h5>
+                                    <p class="brand card-text">${articles[i].brand}</p>
+                                    <p class="card-text resize-text">${articles[i].description}</p>
+                                    <p>${articles[i].price} €</p>
+                                    <p>${articles[i]._id}</p>
+                                    <button type="button" class="findOutMoreBtn btn btn-primary">Scopri di più</button>
+                                    <button type="button" class="modifyBtn btn btn-danger">Modifica</button>
+                                </div>
+                            </div>
+                        </div>
+                    `
+    }
+}
+
+// ---------------PRODUCT PAGE---------------
+
+// Shows side menu with all products available to add
+function setSideMenu() {
+    menuBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        sideMenu.classList.toggle('slideIn');
+
+    })
+    // Populates side menu with items
+    populateSideMenu();
+}
+
+// OPENS PRODUCT PAGE
+function openProductPage() {
+    const findOutMoreLinks = document.querySelectorAll('.findOutMoreBtn');
+    findOutMoreLinks.forEach((link) => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            let productCard = link.closest(".card");
+            console.log(productCard)
+            // Make a request to the server using the id stored in the data-id attribute
+            getDataToProductPage(productCard.dataset.id)
+            // Hides previous page
+            setTimeout(() => goToPage(productPage), timeouts[7])
+            setTimeout(() => backToHomePage(0), timeouts[7])
+        });
+    });
+}
 
 // GET DATA TO PRODUCT PAGE
 async function getDataToProductPage(_id) {
@@ -70,7 +154,7 @@ async function getDataToProductPage(_id) {
         const data = await response.json();
         console.log(data);
         // Populate product page
-        populateProductPage(data);
+        setTimeout(() => populateProductPage(data), timeouts[5]);
     } catch (error) {
         console.log("Error: ", error);
     }
@@ -94,26 +178,115 @@ function populateProductPage(singleArticle) {
                     `
 }
 
-// OPENS PRODUCT PAGE
-function openProductPage() {
-    const findOutMoreLinks = document.querySelectorAll('.findOutMoreBtn');
-    findOutMoreLinks.forEach((link) => {
-        link.addEventListener('click', (event) => {
+
+// ---------------INSERT FORM PAGE--------------------
+
+// Sets insert form page
+function setAddNewItemPage() {
+
+    addNewItemBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        setTimeout(() => goToPage(insertFormPage), timeouts[7]);
+
+        // Button Creates new object and posts it to the API
+        addProductBtn.addEventListener('click', (event) => {
             event.preventDefault();
-            let productCard = link.closest(".card");
-            // Make a request to the server using the id stored in the data-id attribute
-            getDataToProductPage(productCard.dataset.id)
-            // Hides previous page
-            setTimeout(() => {
-                document.querySelector('.visible').classList.remove('visible');
-                document.querySelector('#productPage').classList.add('visible');
-            }, timeouts[5])
-            setTimeout(() => backToHomePage(0), timeouts[7])
-        });
+            // Take info in the objects from the fields and create object
+            itemToAdd = new createArticle(productName.value, description.value, brand.value, imageUrl.value, parseFloat(price.value));
+            // Make a post request with the object passed as argument
+            console.log(itemToAdd);
+            setTimeout(() => postData(itemToAdd), timeouts[9]);
+        })
+        setTimeout(() => backToHomePage(1), timeouts[9])
+
+    });
+
+    // Select all the items in the page
+    // The red button must reset the form
+    // The green button must create a new object
+    // Take info in the objects from the fields
+    // Make a post request with the object passed as argument
+    // Update home page with new data
+    // Make page disappear
+    // Make home page visible
+}
+
+// Populates side menu HTML
+function populateSideMenu() {
+    sideMenu.innerHTML = '';
+    products.forEach((item) => {
+        sideMenu.innerHTML += `
+                        <div class="sideMenuItem d-flex">
+                            <img src=${item.imageUrl} alt=${item.name}>
+                            <p>${item.name}</p>
+                            <p>${item.price} €</p>
+                        </div>
+                    `
     });
 }
 
-// POST DATA
+function insertDataInForm() {
+    const menuItems = document.querySelectorAll(".sideMenuItem");
+    menuItems.forEach((item) => {
+        item.addEventListener('click', (event) => {
+            event.preventDefault();
+            // Find element that matches in product
+            productToFillFields = products.find((element) => element.name === item.querySelector('p').innerText);
+            console.log(item.querySelector('p').innerText)
+            productName.value = productToFillFields.name;
+            brand.value = productToFillFields.brand;
+            imageUrl.value = productToFillFields.imageUrl;
+            price.value = parseFloat(productToFillFields.price);
+            description.value = productToFillFields.description;
+            sideMenu.classList.remove('slideIn');
+        })
+    });
+
+}
+
+// Sets button that resets input form
+function setResetButton(){
+    resetBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        allFieldsElements.forEach((element) => {
+            element.value = '';
+        });
+    })
+}
+
+// -----------GENERIC FUNCTIONS------------------
+
+// TRIMS first word to return a brand back from FAKE STORE product
+function getFirstWord(inputString) {
+    const trimmedString = inputString.trim();
+    const firstWord = trimmedString.split(' ')[0];
+    return firstWord;
+}
+
+// Constructor for object to put inside cart
+function createArticle(_name, _description, _brand, _imageUrl, _price) {
+    this.name = _name;
+    this.description = _description;
+    this.brand = _brand;
+    this.imageUrl = _imageUrl;
+    this.price = _price;
+}
+
+// Makes the new page visible and hides all the others
+function goToPage(toPage) {
+    document.querySelector('.visible').classList.remove('visible');
+    toPage.classList.add('visible');
+}
+// Makes homepage visible and hides previous page
+function backToHomePage(index) {
+    document.querySelectorAll(".homePageBtn")[index].addEventListener('click', (event) => {
+        event.preventDefault();
+        document.querySelector(".visible").classList.remove('visible');
+        document.querySelector('#homePage').classList.add('visible');
+    })
+};
+
+// POST DATA Request
 async function postData(_object) {
     try {
         const response = await fetch(endPointUrl, {
@@ -135,7 +308,7 @@ async function postData(_object) {
     }
 }
 
-// PUT data
+// PUT DATA Request
 async function putData(_object, _id) {
     try {
         const response = await fetch(endPointUrl + _id, {
@@ -159,7 +332,7 @@ async function putData(_object, _id) {
 
 }
 
-// DELETE data
+// DELETE Data Request
 async function deleteData(_id) {
     try {
         const response = await fetch(endPointUrl + _id, {
@@ -178,7 +351,7 @@ async function deleteData(_id) {
     }
 }
 
-// GET FAKE DATA FROM FAKE STORE
+// Get data request from fake store and populates local array of products
 async function getFakeData(_address) {
     try {
         const response = await fetch(_address)
@@ -198,130 +371,7 @@ async function getFakeData(_address) {
     }
 }
 
-// TRIMS first word to return a brand back from FAKE STORE product
-function getFirstWord(inputString) {
-    const trimmedString = inputString.trim();
-    const firstWord = trimmedString.split(' ')[0];
-    return firstWord;
-}
-
-// Constructor for object to put inside cart
-function createArticle(_name, _description, _brand, _imageUrl, _price) {
-    this.name = _name;
-    this.description = _description;
-    this.brand = _brand;
-    this.imageUrl = _imageUrl;
-    this.price = _price;
-}
-
-// Populate homepage with products from API
-function populateHomePage(articles) {
-    // Add single product to HTML
-    homePageRow.innerHTML = '';
-    for (let i = 0; i < articles.length; i++) {
-        homePageRow.innerHTML += `                  
-                        <div class="col mb-3">
-                            <div class="card" style=="width: 18rem;" data-id=${articles[i]["_id"]}>
-                                <img src="${articles[i].imageUrl}" class="card-img-top" alt="${articles[i].name}">
-                                <div class="card-body">
-                                    <h5 class="card-title resize-title">${articles[i].name}</h5>
-                                    <p class="brand card-text">${articles[i].brand}</p>
-                                    <p class="card-text resize-text">${articles[i].description}</p>
-                                    <p>${articles[i].price} €</p>
-                                    <a href="#" class="findOutMoreBtn btn btn-primary">Scopri di più</a>
-                                    <a href="#" class="modifyBtn btn btn-danger">Modifica</a>
-                                </div>
-                            </div>
-                        </div>
-                    `
-    }
-}
-
-
-
-// MAKES HOME PAGE VISIBLE AGAIN
-function backToHomePage(index) {
-    document.querySelectorAll(".homePageBtn")[index].addEventListener('click', () => {
-        document.querySelector(".visible").classList.remove('visible');
-        document.querySelector('#homePage').classList.add('visible');
-    })
-};
-
-function toInsertForm() {
-    populateInsertForm();
-    // Select all the items in the page
-    // The red button must reset the form
-    allFieldsElements = document.querySelectorAll('input, textarea');
-    resetBtn = document.querySelector('.resetForm');
-    addProductBtn = document.querySelector('.addProduct');
-    // Resets all fields
-    resetBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        allFieldsElements.forEach((element) => {
-            element.value = '';
-        });
-    })
-    // The green button must create a new object
-    addProductBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        let productName = document.querySelector('#name');
-        let brand = document.querySelector('#brand');
-        let imageUrl = document.querySelector('#imageUrl');
-        let price = document.querySelector('#price');
-        let description = document.querySelector('#description');
-        // Take info in the objects from the fields and create object
-        itemToAdd = new createArticle(productName.value, description.value, brand.value, imageUrl.value, parseFloat(price.value));
-        // Make a post request with the object passed as argument
-        console.log(itemToAdd);
-        setTimeout(() => postData(itemToAdd), timeouts[9]);
-    })
-    setTimeout(() => backToHomePage(1), timeouts[1])
-
-    // Select all the items in the page
-    // The red button must reset the form
-    // The green button must create a new object
-    // Take info in the objects from the fields
-    // Make a post request with the object passed as argument
-    // Update home page with new data
-    // Make page disappear
-    // Make home page visible
-}
-
-
-function populateInsertForm() {
-    insertFormSection.innerHTML = '';
-    const textToInject = `
-                    <form action="" class="insertForm">
-                        <div class="inputField d-flex">
-                            <label for="name">Product name</label>
-                            <input type="text" name="name" id="name" placeholder="Type in the name of the product">
-                        </div>
-                        <div class="inputField d-flex">
-                            <label for="brand">Brand</label>
-                            <input type="text" name="brand" id="brand" placeholder="Type in the product brand">
-                        </div>
-                        <div class="inputField d-flex">
-                            <label for="imageUrl">Image URL</label>
-                            <input type="text" name="imageUrl" id="imageUrl" placeholder="Type in an image URL">
-                        </div>
-                        <div class="inputField d-flex">
-                            <label for="price">Price in €</label>
-                            <input type="text" name="price" id="price"
-                            placeholder="Type in the price for the product. Use numbers only">
-                        </div>
-                        <div class="inputField d-flex">
-                            <label for="description">Description</label>
-                            <textarea name="desciption" id="description" cols="60" rows="5" placeholder="Type in a description of the product"></textarea>
-                        </div>
-                        <div class="buttonsContainer d-flex justify-content-center">
-                            <button type="button" class="resetForm btn btn-danger">Reset form</button>
-                            <button type="submit" class="addProduct btn btn-success">Add product</button>
-                        </div>
-                    </form>
-                </div>
-            `
-    insertFormSection.innerHTML = textToInject;
-}
+// -----------------------------------------------
 
 //MODIFICA
 // Il form deve mostrarmi i campi precompilati di titolo, testo, marca e prezzo da poter cambiare
@@ -330,12 +380,8 @@ function populateInsertForm() {
 // Il pulsante di reset del form deve ripristinare i valori dei campi a quelli memorizzati nella API
 
 
-
-
-
-
 // DELETE BEFORE STARTING
 
 // setTimeout(() => {
-//     deleteData("6574496c2c6a0d00184959d3")
+//     deleteData("6575ccf83dada00018a69e7f")
 // }, 3000)

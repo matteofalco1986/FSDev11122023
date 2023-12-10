@@ -33,28 +33,24 @@
         <section class="page" id="productPage">
             <div class="container-fluid">
                 <div class="productPageRow d-flex justify-content-center">
-                    <div>
-                        <img src="" alt="Product Image"> <!-- Image of current product -->
-                    </div>
-                    <div>
-                        <h2></h2>
-                        <h3></h3>
-                        <p class="productDescription"></p>
-                        <p></p>
-                        <a href="#" class="modifyBtn btn btn-danger"></a>
-                    </div>
+
                 </div>
             </div>
-            <div class="buttonContainer d-flex justify-content-center"><button type="button" class="homePageBtn btn btn-primary">Home page</button></div>
+            <div class="buttonContainer d-flex justify-content-center"><button type="button"
+                    class="homePageBtn btn btn-primary">Home page</button></div>
         </section>
         <!-- INSERT FORM SECTION -->
-        <section class="page" id="insertForm"> 
+        <section class="page" id="insertForm">
+            <button type="button" class="menuBtn btn btn-info text-white">Click for products</button>
+            <div class="sideMenu d-flex flex-column">
+
+            </div>
             <h2 class="formTitle text-center">INSERT A NEW PRODUCT</h2>
             <div class="insertFormContainer">
-                <!-- <form action="#" class="insertForm">
+                <form action="submit" class="insertForm">
                     <div class="inputField d-flex">
                         <label for="name">Product name</label>
-                        <input type="text" name="name" id="name" placeholder="Type in the name ofthe product">
+                        <input type="text" name="name" id="name" placeholder="Type in the name of the product">
                     </div>
                     <div class="inputField d-flex">
                         <label for="brand">Brand</label>
@@ -67,13 +63,18 @@
                     <div class="inputField d-flex">
                         <label for="price">Price in €</label>
                         <input type="text" name="price" id="price"
-                        placeholder="Type in the price for the product. Use numbers only">
+                            placeholder="Type in the price for the product. Use numbers only">
                     </div>
                     <div class="inputField d-flex">
                         <label for="description">Description</label>
-                        <textarea name="desciption" id="description" cols="60" rows="5" placeholder="Type in a description of the product"></textarea>
+                        <textarea name="desciption" id="description" cols="60" rows="5"
+                            placeholder="Type in a description of the product"></textarea>
                     </div>
-                </form> -->
+                    <div class="buttonsContainer d-flex justify-content-center">
+                        <button type="button" class="resetForm btn btn-danger">Reset form</button>
+                        <button type="submit" class="addProduct btn btn-success">Add product</button>
+                    </div>
+                </form>
             </div>
             <div class="buttonsContainer d-flex justify-content-center">
                 <button type="button" class="homePageBtn btn btn-primary" id="toHomeFromForm">Home page</button>
