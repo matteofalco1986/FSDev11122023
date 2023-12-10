@@ -68,6 +68,9 @@ setTimeout(setModifyItemButtons, timeouts[7]);
 // Set delete buttons for form
 setTimeout(setDeleteBtn, timeouts[7]);
 
+// Set change buttons for form
+setTimeout(setSubmitChangesBtn, timeouts[7]);
+
 // Makes button clickable to go to insert new product form
 setTimeout(setAddNewItemPage, timeouts[9])
 
@@ -117,7 +120,6 @@ function populateHomePage(articles) {
                                     <p class="brand card-text">${articles[i].brand}</p>
                                     <p class="card-text resize-text">${articles[i].description}</p>
                                     <p>${articles[i].price} €</p>
-                                    <p>${articles[i]._id}</p>
                                     <button type="button" class="findOutMoreBtn btn btn-primary">Scopri di più</button>
                                     <button type="button" class="modifyBtn btn btn-danger">Modifica</button>
                                 </div>
@@ -125,19 +127,6 @@ function populateHomePage(articles) {
                         </div>
                     `
     }
-}
-
-// ---------------PRODUCT PAGE---------------
-
-// Shows side menu with all products available to add
-function setSideMenu() {
-    menuBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        sideMenu.classList.toggle('slideIn');
-
-    })
-    // Populates side menu with items
-    populateSideMenu();
 }
 
 // Set buttons to send to detail page
@@ -173,6 +162,18 @@ function setModifyItemButtons() {
         });
     });
 }
+// ---------------PRODUCT PAGE---------------
+
+// Shows side menu with all products available to add
+function setSideMenu() {
+    menuBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        sideMenu.classList.toggle('slideIn');
+    })
+    // Populates side menu with items
+    populateSideMenu();
+}
+
 
 // GET DATA TO PRODUCT PAGE
 async function getDataToProductPage(_id) {
@@ -190,20 +191,20 @@ async function getDataToProductPage(_id) {
         console.log(data);
         // Populate product page
         setTimeout(() => populateProductPage(data), timeouts[5]);
+        setTimeout(() => {
+            let modFromPage = document.querySelector(".modFromDetailsPageBtn");
+            modFromPage.addEventListener('click', () => {
+                // popolare il modify form section con i dati
+                setTimeout(() => insertDataInModifyForm(data), timeouts[5]);
+                // nascondere la pagina corrente
+                productPage.classList.remove('visible');
+                // mostrare la pagina di modifica form
+                setTimeout(() => modifyProductPage.classList.add('visible'), timeouts[7]);
+            })
+        }, timeouts[9])
     } catch (error) {
         console.log("Error: ", error);
     }
-}
-
-function setDeleteBtn(){
-    deleteBtn.addEventListener('click', () => {
-        const myProductId = productIdMod.innerHTML;
-        deleteData(myProductId);
-        modifyProductPage.classList.remove('visible');
-        setTimeout(() => getDataToHomePage(''), timeouts[5])
-    
-        setTimeout(() => location.reload(), timeouts[9])
-    });
 }
 
 
@@ -220,7 +221,7 @@ function populateProductPage(singleArticle) {
                             <h3>${singleArticle.brand}</h3>
                             <p class="productDescription">${singleArticle.description}</p>
                             <p>${singleArticle.price} €</p>
-                            <a href="#" class="modifyBtn btn btn-danger">Modifica</a>
+                            <button class="modFromDetailsPageBtn btn btn-danger">Modifica</button>
                         </div>
                     `
 }
@@ -321,13 +322,48 @@ async function getDataToModifyPage(_id) {
 }
 
 function insertDataInModifyForm(product) {
-    
+
     productIdMod.innerHTML = product._id;
     productNameMod.value = product.name;
     brandMod.value = product.brand;
     imageUrlMod.value = product.imageUrl;
     priceMod.value = parseFloat(product.price);
     descriptionMod.value = product.description;
+}
+
+
+// SET MODIFY ITEM
+// Button Creates new object and posts it to the API
+
+function setSubmitChangesBtn() {
+    submitChangesBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        const myProductId = productIdMod.innerHTML;
+        // Take info in the objects from the fields and create object
+        itemToAdd = new createArticle(productNameMod.value, descriptionMod.value, brandMod.value, imageUrlMod.value, parseFloat(priceMod.value));
+        // Make a post request with the object passed as argument
+        // console.log(itemToAdd);
+        setTimeout(() => putData(itemToAdd, myProductId), timeouts[6]);
+        // Nascondere la pagina corrente
+        document.querySelector('.visible').classList.remove('visible');
+        // Iniettare i dati nuovi nella home page
+        setTimeout(() => getDataToHomePage(""), timeouts[7]);
+        // Rendere la home page visibile
+        setTimeout(() => location.reload(), timeouts[9]);
+    })
+}
+
+
+function setDeleteBtn() {
+    deleteBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        const myProductId = productIdMod.innerHTML;
+        deleteData(myProductId);
+        modifyProductPage.classList.remove('visible');
+        setTimeout(() => getDataToHomePage(''), timeouts[5])
+
+        setTimeout(() => location.reload(), timeouts[9])
+    });
 }
 
 // -----------GENERIC FUNCTIONS------------------
@@ -448,16 +484,3 @@ async function getFakeData(_address) {
 }
 
 // -----------------------------------------------
-
-//MODIFICA
-// Il form deve mostrarmi i campi precompilati di titolo, testo, marca e prezzo da poter cambiare
-// Nella schermata di modifica, la pagina deve mostrarmi quanto è presente nei campi, con la possibilità di modificarli. Il tipo di richiesta sarà un PUT.
-// La schermata deve darmi la possibilità di cancellare la risorsa dalla API.
-// Il pulsante di reset del form deve ripristinare i valori dei campi a quelli memorizzati nella API
-
-
-// DELETE BEFORE STARTING
-
-// setTimeout(() => {
-//     deleteData("65737770fe031e0019ba1c75")
-// }, 3000)
